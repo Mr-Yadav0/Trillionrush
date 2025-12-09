@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Spend ₹1 Trillion in 60 Seconds</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #050509;
+      --card: rgba(13, 13, 24, 0.9);
+      --accent: #f5c542;
+      --accent-soft: rgba(245, 197, 66, 0.18);
+      --text-main: #f8f8fc;
+      --text-muted: #a3a3c2;
+      --danger: #ff4b6a;
+      --success: #57e39a;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      background: radial-gradient(circle at top, #1b1630 0, #050509 55%, #000 100%);
+      color: var(--text-main);
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 16px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 520px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border-radius: 26px;
+      padding: 18px 16px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .app-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .app-title {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .app-pill {
+      font-size: 11px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(245, 197, 66, 0.6);
+      background: rgba(245, 197, 66, 0.12);
+    }
+
+    .app-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .app-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(87, 227, 154, 0.12);
+      border: 1px solid rgba(87, 227, 154, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--success);
+    }
+
+    .screens {
+      position: relative;
+      margin-top: 6px;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn 0.35s ease-out;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    /* START SCREEN */
+
+    .start-hero {
+      text-align: center;
+      padding: 8px 4px 16px;
+    }
+
+    .start-hero h1 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .start-highlight {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .start-tagline {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .persona-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .persona-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 8px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .persona-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.6);
+    }
+
+    .persona-card.selected {
+      border-color: var(--accent);
+      background: radial-gradient(circle at top, rgba(245, 197, 66, 0.25) 0, rgba(10, 10, 20, 1) 55%);
+      box-shadow: 0 0 24px rgba(245, 197, 66, 0.3);
+    }
+
+    .persona-emoji {
+      font-size: 22px;
+    }
+
+    .persona-name {
+      font-size: 11px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .persona-tag {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .start-footer {
+      margin-top: 18px;
+      padding: 10px 10px 0;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .start-info {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: none;
+      font-weight: 600;
+      background: linear-gradient(135deg, #f5c542, #ffdf89);
+      color: #271b02;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    }
+
+    .primary-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+    }
+
+    .primary-btn[disabled] {
+      opacity: 0.5;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .pill-tag {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* GAME SCREEN */
+
+    .game-section {
+      margin-top: 6px;
+    }
+
+    .status-bar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+
+    .status-chip {
+      background: rgba(11, 11, 22, 0.9);
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .status-label {
+      color: var(--text-muted);
+    }
+
+    .status-value {
+      font-weight: 600;
+    }
+
+    .status-chip.time-danger {
+      border-color: var(--danger);
+      color: var(--danger);
+      box-shadow: 0 0 12px rgba(255, 75, 106, 0.5);
+    }
+
+    .money-big {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .money-rupee {
+      color: var(--accent);
+    }
+
+    .game-card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.75);
+    }
+
+    .game-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .game-mode-tag {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(245, 197, 66, 0.14);
+      border: 1px solid rgba(245, 197, 66, 0.5);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .game-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .items-grid {
+      margin-top: 6px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      max-height: 290px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .item-card {
+      background: radial-gradient(circle at top left, rgba(245, 197, 66, 0.16), rgba(5,5,10,1));
+      border-radius: 14px;
+      padding: 7px 7px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+      position: relative;
+    }
+
+    .item-emoji {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    .item-name-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .item-name {
+      font-weight: 600;
+    }
+
+    .item-tier {
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+    }
+
+    .item-tier-rare {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(245, 197, 66, 0.12);
+    }
+
+    .item-desc {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .item-price {
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .item-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      gap: 6px;
+    }
+
+    .item-count {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .item-buy-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #f5c542;
+      color: #201703;
+      min-width: 70px;
+      text-align: center;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.08s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.75);
+    }
+
+    .item-buy-btn:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+    }
+
+    .item-buy-btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* RESULT SCREEN */
+
+    .result-card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 12px 12px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 22px 45px rgba(0,0,0,0.9);
+    }
+
+    .result-header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .result-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .result-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .result-stats {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .result-stat-card {
+      background: rgba(10,10,18,0.95);
+      border-radius: 14px;
+      padding: 6px 7px;
+      border: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+    }
+
+    .result-label {
+      color: var(--text-muted);
+      font-size: 10px;
+      margin-bottom: 2px;
+    }
+
+    .result-value {
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .result-rank {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 6px;
+    }
+
+    .flex-list {
+      margin-top: 10px;
+      max-height: 140px;
+      overflow-y: auto;
+      padding-right: 2px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.01);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .flex-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 9px;
+      font-size: 11px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .flex-item:last-child {
+      border-bottom: none;
+    }
+
+    .flex-left {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .flex-emoji {
+      font-size: 14px;
+    }
+
+    .flex-name {
+      font-weight: 500;
+    }
+
+    .flex-count {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .result-actions {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ghost-btn {
+      width: 100%;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: transparent;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+    }
+
+    .ghost-btn:active {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    .ghost-btn-accent {
+      border-color: rgba(245, 197, 66, 0.7);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .share-reward-banner {
+      margin-top: 8px;
+      font-size: 11px;
+      padding: 7px 9px;
+      border-radius: 14px;
+      background: rgba(245, 197, 66, 0.08);
+      border: 1px dashed rgba(245, 197, 66, 0.65);
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    .share-reward-main {
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .share-reward-sub {
+      color: var(--text-muted);
+      font-size: 10px;
+    }
+
+    /* TOAST */
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      background: rgba(8,8,16,0.96);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.9);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, -4px);
+      pointer-events: auto;
+    }
+
+    /* UTIL */
+
+    .text-accent {
+      color: var(--accent);
+    }
+
+    .text-muted {
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 480px) {
+      .app-shell {
+        padding: 14px 12px 16px;
+        border-radius: 22px;
+      }
+      .items-grid {
+        max-height: 260px;
+      }
+      .result-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="app-header">
+      <div class="app-title-block">
+        <div class="app-title">
+          ₹1 Trillion Rush
+          <span class="app-pill">60s Spend Challenge</span>
+        </div>
+        <div class="app-subtitle">Feel stupid rich. Flex harder. Burn fake money.</div>
+      </div>
+      <div class="app-badge">
+        <span>🪙</span>
+        <span>Rich-sim • Free</span>
+      </div>
+    </div>
+
+    <div class="screens">
+      <!-- START SCREEN -->
+      <div id="screen-start" class="screen active">
+        <div class="start-hero">
+          <div class="start-highlight">₹1,000,000,000,000</div>
+          <h1>Spend it in 60 seconds.</h1>
+          <p class="start-tagline">
+            Choose your billionaire persona. Buy jets, islands, yachts & more. Then flex your results.
+          </p>
+        </div>
+        <div class="persona-grid">
+          <div class="persona-card" data-persona="tech">
+            <div class="persona-emoji">🧠</div>
+            <div class="persona-name">Tech Billionaire</div>
+            <div class="persona-tag">Discount on futuristic & AI toys.</div>
+          </div>
+          <div class="persona-card" data-persona="bollywood">
+            <div class="persona-emoji">🎬</div>
+            <div class="persona-name">Bollywood Star</div>
+            <div class="persona-tag">Luxury lifestyle is cheaper for you.</div>
+          </div>
+          <div class="persona-card" data-persona="oil">
+            <div class="persona-emoji">🛢️</div>
+            <div class="persona-name">Oil King</div>
+            <div class="persona-tag">Bonus burn rate on mega purchases.</div>
+          </div>
+        </div>
+        <div class="start-footer">
+          <div class="start-info">
+            <span>Start: <span class="text-accent">₹1T • 60s</span></span>
+            <span>Mode: <span class="text-accent">Classic Rush</span></span>
+          </div>
+          <div class="pill-row">
+            <span class="pill-tag">⚡ Ultra fast</span>
+            <span class="pill-tag">🛥 Yachts & jets</span>
+            <span class="pill-tag">🏝 Islands & moon base</span>
+            <span class="pill-tag">📸 Flex-ready share card</span>
+          </div>
+          <button id="start-btn" class="primary-btn" disabled>
+            <span>Start spending</span> <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- GAME SCREEN -->
+      <div id="screen-game" class="screen">
+        <div class="game-section">
+          <div class="status-bar">
+            <div id="time-chip" class="status-chip">
+              <span class="status-label">Time</span>
+              <span class="status-value"><span id="time-left">60</span>s</span>
+            </div>
+            <div class="status-chip">
+              <span class="status-label">Money left</span>
+              <span class="status-value money-big"><span class="money-rupee">₹</span><span id="money-left">0</span></span>
+            </div>
+            <div class="status-chip">
+              <span class="status-label">Persona</span>
+              <span class="status-value" id="current-persona-label">-</span>
+            </div>
+          </div>
+
+          <div class="game-card">
+            <div class="game-header-row">
+              <div class="game-mode-tag">
+                💸 Classic Spend
+                <span style="font-size:9px; opacity:0.8;">(v1)</span>
+              </div>
+              <div class="game-hint">
+                Tap fast. Big items = big flex.
+              </div>
+            </div>
+            <div id="items-grid" class="items-grid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULT SCREEN -->
+      <div id="screen-result" class="screen">
+        <div class="result-card">
+          <div class="result-header">
+            <div class="result-title">Time’s up. How rich did you flex?</div>
+            <div id="result-tagline" class="result-sub">
+              You went on a decent shopping spree.
+            </div>
+          </div>
+          <div class="result-stats">
+            <div class="result-stat-card">
+              <div class="result-label">Total spent</div>
+              <div class="result-value"><span class="money-rupee">₹</span><span id="result-spent">0</span></div>
+            </div>
+            <div class="result-stat-card">
+              <div class="result-label">Money left</div>
+              <div class="result-value"><span class="money-rupee">₹</span><span id="result-remaining">0</span></div>
+            </div>
+            <div class="result-stat-card">
+              <div class="result-label">Biggest flex</div>
+              <div class="result-value" id="result-biggest">-</div>
+            </div>
+          </div>
+          <div class="result-rank">
+            Rank: <span id="result-rank">Middle Class Billionaire</span>
+          </div>
+
+          <div id="flex-list" class="flex-list"></div>
+
+          <div class="share-reward-banner" id="share-banner">
+            <div>🎁</div>
+            <div>
+              <div class="share-reward-main" id="share-reward-main">
+                Share your flex to unlock a bonus next game.
+              </div>
+              <div class="share-reward-sub" id="share-reward-sub">
+                Post your result on social and you’ll start the next round with extra power.
+              </div>
+            </div>
+          </div>
+
+          <div class="result-actions">
+            <button id="share-btn" class="ghost-btn ghost-btn-accent">
+              <span>📸 Share your billionaire flex</span>
+            </button>
+            <button id="play-again-btn" class="ghost-btn">
+              <span>🔁 Play again with bonus</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast">
+      <span id="toast-icon">✨</span>
+      <span id="toast-text">Bonus applied.</span>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const START_MONEY = 1_000_000_000_000;
+      const BASE_TIME = 60;
+
+      const BONUS_KEY = "trillion_rush_bonus_v1";
+
+      const personas = {
+        tech: {
+          name: "Tech Billionaire",
+          emoji: "🧠",
+          desc: "Discount on futuristic tech.",
+          priceModifier: 0.94, // 6% cheaper
+        },
+        bollywood: {
+          name: "Bollywood Star",
+          emoji: "🎬",
+          desc: "Luxury lifestyle costs slightly less.",
+          priceModifier: 0.9, // 10% cheaper on luxury
+        },
+        oil: {
+          name: "Oil King",
+          emoji: "🛢️",
+          desc: "Mega items burn money slightly faster.",
+          priceModifier: 1.05, // 5% more on mega tier
+        },
+      };
+
+      const items = [
+        // Common / luxury
+        { id: "watch", name: "Swiss Luxury Watch", emoji: "⌚", tier: "Luxury", basePrice: 5_000_000, desc: "You don’t need time, you own it." },
+        { id: "sneakers", name: "Designer Sneakers", emoji: "👟", tier: "Luxury", basePrice: 800_000, desc: "For stepping on your old salary." },
+        { id: "bike", name: "Superbike", emoji: "🏍️", tier: "Luxury", basePrice: 3_500_000, desc: "Office? What office." },
+        { id: "penthouse", name: "Skyline Penthouse", emoji: "🏙️", tier: "Luxury", basePrice: 250_000_000, desc: "Glass, marble, and bad decisions." },
+        { id: "villa", name: "Beachfront Villa", emoji: "🏡", tier: "Luxury", basePrice: 500_000_000, desc: "Morning chai with a private beach." },
+        { id: "supercar", name: "Hypercar", emoji: "🏎️", tier: "Luxury", basePrice: 150_000_000, desc: "0–100 faster than your exam results." },
+        { id: "art", name: "Rare Art Piece", emoji: "🖼️", tier: "Luxury", basePrice: 80_000_000, desc: "You bought it because it was expensive." },
+        { id: "diamond", name: "Insane Diamond Set", emoji: "💎", tier: "Luxury", basePrice: 300_000_000, desc: "Shinier than your future." },
+
+        // Mega items
+        { id: "jet", name: "Private Jet", emoji: "✈️", tier: "Mega", basePrice: 20_000_000_000, desc: "Economy is now a bad word." },
+        { id: "yacht", name: "Mega Yacht", emoji: "🛥️", tier: "Mega", basePrice: 35_000_000_000, desc: "A house, but floating." },
+        { id: "island", name: "Private Island", emoji: "🏝️", tier: "Mega", basePrice: 90_000_000_000, desc: "New address: ‘Somewhere in the ocean’." },
+        { id: "hotel", name: "7-Star Hotel", emoji: "🏨", tier: "Mega", basePrice: 60_000_000_000, desc: "Your guests are richer than CEOs." },
+        { id: "stadium", name: "Cricket Stadium", emoji: "🏟️", tier: "Mega", basePrice: 45_000_000_000, desc: "Now *you* decide who wins the toss." },
+
+        // Insane flex
+        { id: "moonbase", name: "Moon Base", emoji: "🌕", tier: "Insane", basePrice: 400_000_000_000, rare: true, desc: "WFH = Work From Helium-3." },
+        { id: "marsvilla", name: "Mars Mansion", emoji: "🚀", tier: "Insane", basePrice: 550_000_000_000, rare: true, desc: "Neighbours: just you and silence." },
+        { id: "airline", name: "Entire Airline Company", emoji: "🛫", tier: "Insane", basePrice: 300_000_000_000, rare: true, desc: "You don’t book flights, you buy routes." },
+        { id: "goldstatue", name: "100m Gold Statue of You", emoji: "🗽", tier: "Insane", basePrice: 200_000_000_000, rare: true, desc: "Subtlety is dead." },
+        { id: "aisuper", name: "AI Supercomputer Farm", emoji: "🧮", tier: "Insane", basePrice: 250_000_000_000, rare: true, desc: "You train models that call you ‘Boss’." },
+        { id: "city", name: "Small City Rights", emoji: "🏙️", tier: "Insane", basePrice: 600_000_000_000, rare: true, desc: "Mayor? That’s just your employee." },
+      ];
+
+      const shareRewards = [
+        { type: "time", amount: 10, label: "+10s extra next game", description: "More time to burn that fake wealth." },
+        { type: "time", amount: 20, label: "+20s extra next game", description: "You unlocked overtime spending mode." },
+        { type: "money", amount: 50_000_000_000, label: "+₹50B extra next game", description: "Bonus cash to flex even harder." },
+        { type: "money", amount: 100_000_000_000, label: "+₹100B extra next game", description: "You start richer than before." },
+      ];
+
+      const screenStart = document.getElementById("screen-start");
+      const screenGame = document.getElementById("screen-game");
+      const screenResult = document.getElementById("screen-result");
+
+      const personaCards = document.querySelectorAll(".persona-card");
+      const startBtn = document.getElementById("start-btn");
+      const timeLeftSpan = document.getElementById("time-left");
+      const moneyLeftSpan = document.getElementById("money-left");
+      const timeChip = document.getElementById("time-chip");
+      const currentPersonaLabel = document.getElementById("current-persona-label");
+      const itemsGrid = document.getElementById("items-grid");
+
+      const resultSpent = document.getElementById("result-spent");
+      const resultRemaining = document.getElementById("result-remaining");
+      const resultBiggest = document.getElementById("result-biggest");
+      const resultRank = document.getElementById("result-rank");
+      const resultTagline = document.getElementById("result-tagline");
+      const flexList = document.getElementById("flex-list");
+      const shareBanner = document.getElementById("share-banner");
+      const shareRewardMain = document.getElementById("share-reward-main");
+      const shareRewardSub = document.getElementById("share-reward-sub");
+      const shareBtn = document.getElementById("share-btn");
+      const playAgainBtn = document.getElementById("play-again-btn");
+
+      const toastEl = document.getElementById("toast");
+      const toastText = document.getElementById("toast-text");
+      const toastIcon = document.getElementById("toast-icon");
+
+      let state = {
+        personaKey: null,
+        timeLeft: BASE_TIME,
+        moneyLeft: START_MONEY,
+        totalSpent: 0,
+        timerId: null,
+        purchases: {}, // itemId -> count
+        biggestPurchase: null,
+        currentReward: null,
+      };
+
+      // UTIL FUNCTIONS
+
+      function formatMoney(num) {
+        if (num >= 1_00_000_00_000) {
+          // format in crore style roughly
+          return num.toLocaleString("en-IN");
+        }
+        return num.toLocaleString("en-IN");
+      }
+
+      function randomFrom(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+
+      function showScreen(targetId) {
+        [screenStart, screenGame, screenResult].forEach((el) => el.classList.remove("active"));
+        const target = document.getElementById(targetId);
+        if (target) target.classList.add("active");
+      }
+
+      function showToast(message, icon = "✨") {
+        toastText.textContent = message;
+        toastIcon.textContent = icon;
+        toastEl.classList.add("show");
+        setTimeout(() => {
+          toastEl.classList.remove("show");
+        }, 2200);
+      }
+
+      function loadBonus() {
+        try {
+          const raw = localStorage.getItem(BONUS_KEY);
+          if (!raw) return null;
+          const bonus = JSON.parse(raw);
+          return bonus;
+        } catch {
+          return null;
+        }
+      }
+
+      function clearBonus() {
+        localStorage.removeItem(BONUS_KEY);
+      }
+
+      function applyBonusToState() {
+        const bonus = loadBonus();
+        if (!bonus) return;
+
+        if (bonus.type === "time") {
+          state.timeLeft += bonus.amount;
+          showToast(`Bonus applied: +${bonus.amount}s this round`, "⏱️");
+        } else if (bonus.type === "money") {
+          state.moneyLeft += bonus.amount;
+          showToast(`Bonus applied: +₹${formatMoney(bonus.amount)}`, "🪙");
+        }
+        clearBonus();
+      }
+
+      function saveShareReward(reward) {
+        localStorage.setItem(BONUS_KEY, JSON.stringify(reward));
+      }
+
+      // GAME FLOW
+
+      personaCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          personaCards.forEach((c) => c.classList.remove("selected"));
+          card.classList.add("selected");
+          const pKey = card.dataset.persona;
+          state.personaKey = pKey;
+          const p = personas[pKey];
+          currentPersonaLabel.textContent = p ? `${p.emoji} ${p.name}` : "-";
+          startBtn.disabled = false;
+        });
+      });
+
+      startBtn.addEventListener("click", () => {
+        if (!state.personaKey) {
+          alert("Select a persona first.");
+          return;
+        }
+        startGame();
+      });
+
+      function startGame() {
+        if (state.timerId) clearInterval(state.timerId);
+
+        state.timeLeft = BASE_TIME;
+        state.moneyLeft = START_MONEY;
+        state.totalSpent = 0;
+        state.purchases = {};
+        state.biggestPurchase = null;
+        state.currentReward = null;
+
+        applyBonusToState();
+
+        timeLeftSpan.textContent = state.timeLeft;
+        moneyLeftSpan.textContent = formatMoney(state.moneyLeft);
+        timeChip.classList.remove("time-danger");
+
+        renderItems();
+        showScreen("screen-game");
+
+        state.timerId = setInterval(() => {
+          state.timeLeft -= 1;
+          if (state.timeLeft <= 0) {
+            state.timeLeft = 0;
+            timeLeftSpan.textContent = state.timeLeft;
+            timeChip.classList.add("time-danger");
+            endGame();
+            return;
+          }
+          timeLeftSpan.textContent = state.timeLeft;
+          if (state.timeLeft <= 10) {
+            timeChip.classList.add("time-danger");
+          } else {
+            timeChip.classList.remove("time-danger");
+          }
+        }, 1000);
+      }
+
+      function modifyPriceForPersona(item) {
+        const persona = personas[state.personaKey];
+        if (!persona) return item.basePrice;
+
+        let price = item.basePrice;
+        switch (state.personaKey) {
+          case "tech":
+            if (item.tier === "Insane" || item.id === "aisuper") price *= persona.priceModifier;
+            break;
+          case "bollywood":
+            if (item.tier === "Luxury") price *= persona.priceModifier;
+            break;
+          case "oil":
+            if (item.tier === "Mega" || item.tier === "Insane") price *= persona.priceModifier;
+            break;
+          default:
+            break;
+        }
+        return Math.round(price);
+      }
+
+      function renderItems() {
+        itemsGrid.innerHTML = "";
+        const shuffled = [...items].sort(() => Math.random() - 0.5);
+
+        shuffled.forEach((item) => {
+          const price = modifyPriceForPersona(item);
+          const card = document.createElement("div");
+          card.className = "item-card";
+
+          const emojiDiv = document.createElement("div");
+          emojiDiv.className = "item-emoji";
+          emojiDiv.textContent = item.emoji;
+
+          const nameRow = document.createElement("div");
+          nameRow.className = "item-name-row";
+
+          const nameSpan = document.createElement("div");
+          nameSpan.className = "item-name";
+          nameSpan.textContent = item.name;
+
+          const tierSpan = document.createElement("div");
+          tierSpan.className = "item-tier";
+          if (item.rare) {
+            tierSpan.classList.add("item-tier-rare");
+          }
+          tierSpan.textContent = item.tier + (item.rare ? " • Rare" : "");
+
+          nameRow.appendChild(nameSpan);
+          nameRow.appendChild(tierSpan);
+
+          const descDiv = document.createElement("div");
+          descDiv.className = "item-desc";
+          descDiv.textContent = item.desc;
+
+          const footer = document.createElement("div");
+          footer.className = "item-footer";
+
+          const leftFooter = document.createElement("div");
+          const priceDiv = document.createElement("div");
+          priceDiv.className = "item-price";
+          priceDiv.innerHTML = `<span class="money-rupee">₹</span>${formatMoney(price)}`;
+
+          const countDiv = document.createElement("div");
+          countDiv.className = "item-count";
+          countDiv.textContent = "Owned: 0";
+
+          leftFooter.appendChild(priceDiv);
+          leftFooter.appendChild(countDiv);
+
+          const btn = document.createElement("button");
+          btn.className = "item-buy-btn";
+          btn.textContent = "Buy";
+
+          function updateButtonState() {
+            const canAfford = state.moneyLeft >= price;
+            if (!canAfford) {
+              btn.classList.add("disabled");
+            } else {
+              btn.classList.remove("disabled");
+            }
+          }
+
+          btn.addEventListener("click", () => {
+            if (state.timeLeft <= 0) return;
+            if (state.moneyLeft < price) {
+              showToast("Not enough fake money. Go bigger earlier.", "⚠️");
+              updateButtonState();
+              return;
+            }
+            state.moneyLeft -= price;
+            state.totalSpent += price;
+            moneyLeftSpan.textContent = formatMoney(state.moneyLeft);
+
+            const prevCount = state.purchases[item.id] || 0;
+            state.purchases[item.id] = prevCount + 1;
+            countDiv.textContent = `Owned: ${state.purchases[item.id]}`;
+
+            if (!state.biggestPurchase || price > state.biggestPurchase.price) {
+              state.biggestPurchase = { item, price };
+            }
+
+            card.style.transform = "translateY(-2px) scale(1.01)";
+            card.style.boxShadow = "0 14px 32px rgba(0,0,0,0.8)";
+            setTimeout(() => {
+              card.style.transform = "";
+              card.style.boxShadow = "";
+            }, 140);
+
+            updateButtonState();
+          });
+
+          footer.appendChild(leftFooter);
+          footer.appendChild(btn);
+
+          card.appendChild(emojiDiv);
+          card.appendChild(nameRow);
+          card.appendChild(descDiv);
+          card.appendChild(footer);
+
+          itemsGrid.appendChild(card);
+
+          updateButtonState();
+        });
+      }
+
+      function endGame() {
+        if (state.timerId) clearInterval(state.timerId);
+        state.timerId = null;
+
+        const spent = state.totalSpent;
+        const remaining = state.moneyLeft;
+
+        resultSpent.textContent = formatMoney(spent);
+        resultRemaining.textContent = formatMoney(remaining);
+
+        let biggestName = "-";
+        if (state.biggestPurchase) {
+          biggestName = state.biggestPurchase.item.name;
+        }
+        resultBiggest.textContent = biggestName;
+
+        const percentSpent = spent / (START_MONEY + 100_000_000_000); // slight cushion
+        let rank = "Middle Class Billionaire";
+        let tagline = "You went on a decent shopping spree.";
+
+        if (spent <= 0) {
+          rank = "Paralysed in front of money";
+          tagline = "You had ₹1T and bought… nothing. Impressive self-control or pure panic.";
+        } else if (percentSpent < 0.25) {
+          rank = "Confused Rich Kid";
+          tagline = "You touched a bit of wealth, but most of it just sat there judging you.";
+        } else if (percentSpent < 0.5) {
+          rank = "Entry-Level Tycoon";
+          tagline = "Nice start. With more chaos, you can absolutely go dumber.";
+        } else if (percentSpent < 0.8) {
+          rank = "Mini Ambani";
+          tagline = "You seriously went for it. Your flex is officially dangerous.";
+        } else if (percentSpent < 1.1) {
+          rank = "Certified Pesa Uday Machine";
+          tagline = "You almost annihilated ₹1T. Your WhatsApp group can’t compete.";
+        } else {
+          rank = "God-Tier Wealth Overlord";
+          tagline = "You destroyed money like it was a typo. Legends will talk about this run.";
+        }
+
+        resultRank.textContent = rank;
+        resultTagline.textContent = tagline;
+
+        flexList.innerHTML = "";
+        const purchasedEntries = Object.entries(state.purchases)
+          .map(([id, count]) => {
+            const item = items.find((i) => i.id === id);
+            return { item, count };
+          })
+          .filter((e) => e.item)
+          .sort((a, b) => modifyPriceForPersona(b.item) * b.count - modifyPriceForPersona(a.item) * a.count);
+
+        if (!purchasedEntries.length) {
+          const emptyDiv = document.createElement("div");
+          emptyDiv.className = "flex-item";
+          emptyDiv.innerHTML = `<div class="flex-left"><span class="flex-emoji">😶</span><span class="flex-name">No flex yet</span></div><div class="flex-count">Next round, go wild.</div>`;
+          flexList.appendChild(emptyDiv);
+        } else {
+          purchasedEntries.forEach(({ item, count }) => {
+            const row = document.createElement("div");
+            row.className = "flex-item";
+            const left = document.createElement("div");
+            left.className = "flex-left";
+            const emoji = document.createElement("span");
+            emoji.className = "flex-emoji";
+            emoji.textContent = item.emoji;
+            const nameSpan = document.createElement("span");
+            nameSpan.className = "flex-name";
+            nameSpan.textContent = item.name;
+            const countSpan = document.createElement("span");
+            countSpan.className = "flex-count";
+            countSpan.textContent = `×${count}`;
+            left.appendChild(emoji);
+            left.appendChild(nameSpan);
+            left.appendChild(countSpan);
+
+            const right = document.createElement("div");
+            right.className = "flex-count";
+            const totalPrice = modifyPriceForPersona(item) * count;
+            right.textContent = `₹${formatMoney(totalPrice)}`;
+
+            row.appendChild(left);
+            row.appendChild(right);
+            flexList.appendChild(row);
+          });
+        }
+
+        const reward = randomFrom(shareRewards);
+        state.currentReward = reward;
+        shareRewardMain.textContent = `Share this run to unlock ${reward.label}`;
+        shareRewardSub.textContent = reward.description;
+
+        showScreen("screen-result");
+      }
+
+      shareBtn.addEventListener("click", async () => {
+        if (!state.currentReward) {
+          showToast("Play a round first, then share.", "ℹ️");
+          return;
+        }
+
+        const reward = state.currentReward;
+        const shareText = `I just tried to spend ₹1,000,000,000,000 in 60 seconds as a ${
+          personas[state.personaKey]?.name || "billionaire"
+        }. Rank: ${resultRank.textContent}. Can you beat my flex?`;
+
+        const url = window.location.href;
+
+        let shared = false;
+
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: "₹1 Trillion Rush – My Flex",
+              text: shareText,
+              url,
+            });
+            shared = true;
+          } catch (e) {
+            shared = false;
+          }
+        }
+
+        if (!navigator.share || !shared) {
+          try {
+            await navigator.clipboard.writeText(url);
+            showToast("Link copied. Paste it anywhere to flex.", "📋");
+          } catch {
+            showToast("Copy this link & share: " + url, "📎");
+          }
+        }
+
+        saveShareReward(reward);
+        showToast(`Bonus unlocked: ${reward.label}`, "🎁");
+        shareBanner.style.opacity = "0.6";
+      });
+
+      playAgainBtn.addEventListener("click", () => {
+        showScreen("screen-start");
+      });
+    })();
+  </script>
+</body>
+</html>
