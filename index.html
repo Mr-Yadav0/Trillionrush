@@ -329,6 +329,29 @@
       color: var(--text-muted);
     }
 
+    .time-bar-wrap {
+      width: 100%;
+      margin: 4px 0 10px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+
+    .time-bar {
+      height: 100%;
+      width: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #57e39a, #f5c542);
+      box-shadow: 0 0 12px rgba(245, 197, 66, 0.6);
+      transition: width 0.2s linear, background 0.2s, box-shadow 0.2s;
+    }
+
+    .time-bar-danger {
+      background: linear-gradient(90deg, #ff4b6a, #f5c542);
+      box-shadow: 0 0 14px rgba(255, 75, 106, 0.9);
+    }
+
     .items-grid {
       margin-top: 6px;
       display: grid;
@@ -624,6 +647,7 @@
       color: var(--text-muted);
     }
 
+    /* Responsive tweaks */
     @media (max-width: 480px) {
       .app-shell {
         padding: 14px 12px 16px;
@@ -634,6 +658,31 @@
       }
       .result-stats {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 430px) {
+      .status-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .status-chip {
+        font-size: 10px;
+        padding: 5px 6px;
+      }
+
+      .money-big {
+        font-size: 14px;
+      }
+
+      .items-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 360px) {
+      .status-bar {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -714,6 +763,10 @@
               <span class="status-label">Persona</span>
               <span class="status-value" id="current-persona-label">-</span>
             </div>
+          </div>
+
+          <div class="time-bar-wrap">
+            <div id="time-bar" class="time-bar"></div>
           </div>
 
           <div class="game-card">
@@ -802,24 +855,23 @@
           name: "Tech Billionaire",
           emoji: "🧠",
           desc: "Discount on futuristic tech.",
-          priceModifier: 0.94, // 6% cheaper
+          priceModifier: 0.94,
         },
         bollywood: {
           name: "Bollywood Star",
           emoji: "🎬",
           desc: "Luxury lifestyle costs slightly less.",
-          priceModifier: 0.9, // 10% cheaper on luxury
+          priceModifier: 0.9,
         },
         oil: {
           name: "Oil King",
           emoji: "🛢️",
           desc: "Mega items burn money slightly faster.",
-          priceModifier: 1.05, // 5% more on mega tier
+          priceModifier: 1.05,
         },
       };
 
       const items = [
-        // Common / luxury
         { id: "watch", name: "Swiss Luxury Watch", emoji: "⌚", tier: "Luxury", basePrice: 5_000_000, desc: "You don’t need time, you own it." },
         { id: "sneakers", name: "Designer Sneakers", emoji: "👟", tier: "Luxury", basePrice: 800_000, desc: "For stepping on your old salary." },
         { id: "bike", name: "Superbike", emoji: "🏍️", tier: "Luxury", basePrice: 3_500_000, desc: "Office? What office." },
@@ -829,14 +881,12 @@
         { id: "art", name: "Rare Art Piece", emoji: "🖼️", tier: "Luxury", basePrice: 80_000_000, desc: "You bought it because it was expensive." },
         { id: "diamond", name: "Insane Diamond Set", emoji: "💎", tier: "Luxury", basePrice: 300_000_000, desc: "Shinier than your future." },
 
-        // Mega items
         { id: "jet", name: "Private Jet", emoji: "✈️", tier: "Mega", basePrice: 20_000_000_000, desc: "Economy is now a bad word." },
         { id: "yacht", name: "Mega Yacht", emoji: "🛥️", tier: "Mega", basePrice: 35_000_000_000, desc: "A house, but floating." },
         { id: "island", name: "Private Island", emoji: "🏝️", tier: "Mega", basePrice: 90_000_000_000, desc: "New address: ‘Somewhere in the ocean’." },
         { id: "hotel", name: "7-Star Hotel", emoji: "🏨", tier: "Mega", basePrice: 60_000_000_000, desc: "Your guests are richer than CEOs." },
         { id: "stadium", name: "Cricket Stadium", emoji: "🏟️", tier: "Mega", basePrice: 45_000_000_000, desc: "Now *you* decide who wins the toss." },
 
-        // Insane flex
         { id: "moonbase", name: "Moon Base", emoji: "🌕", tier: "Insane", basePrice: 400_000_000_000, rare: true, desc: "WFH = Work From Helium-3." },
         { id: "marsvilla", name: "Mars Mansion", emoji: "🚀", tier: "Insane", basePrice: 550_000_000_000, rare: true, desc: "Neighbours: just you and silence." },
         { id: "airline", name: "Entire Airline Company", emoji: "🛫", tier: "Insane", basePrice: 300_000_000_000, rare: true, desc: "You don’t book flights, you buy routes." },
@@ -863,6 +913,7 @@
       const timeChip = document.getElementById("time-chip");
       const currentPersonaLabel = document.getElementById("current-persona-label");
       const itemsGrid = document.getElementById("items-grid");
+      const timeBar = document.getElementById("time-bar");
 
       const resultSpent = document.getElementById("result-spent");
       const resultRemaining = document.getElementById("result-remaining");
@@ -883,21 +934,16 @@
       let state = {
         personaKey: null,
         timeLeft: BASE_TIME,
+        initialTime: BASE_TIME,
         moneyLeft: START_MONEY,
         totalSpent: 0,
         timerId: null,
-        purchases: {}, // itemId -> count
+        purchases: {},
         biggestPurchase: null,
         currentReward: null,
       };
 
-      // UTIL FUNCTIONS
-
       function formatMoney(num) {
-        if (num >= 1_00_000_00_000) {
-          // format in crore style roughly
-          return num.toLocaleString("en-IN");
-        }
         return num.toLocaleString("en-IN");
       }
 
@@ -924,8 +970,7 @@
         try {
           const raw = localStorage.getItem(BONUS_KEY);
           if (!raw) return null;
-          const bonus = JSON.parse(raw);
-          return bonus;
+          return JSON.parse(raw);
         } catch {
           return null;
         }
@@ -953,7 +998,18 @@
         localStorage.setItem(BONUS_KEY, JSON.stringify(reward));
       }
 
-      // GAME FLOW
+      function updateTimeBar() {
+        if (!timeBar || state.initialTime <= 0) return;
+        const pct = (state.timeLeft / state.initialTime) * 100;
+        const clamped = Math.max(0, Math.min(100, pct));
+        timeBar.style.width = clamped + "%";
+
+        if (state.timeLeft <= 10) {
+          timeBar.classList.add("time-bar-danger");
+        } else {
+          timeBar.classList.remove("time-bar-danger");
+        }
+      }
 
       personaCards.forEach((card) => {
         card.addEventListener("click", () => {
@@ -986,10 +1042,12 @@
         state.currentReward = null;
 
         applyBonusToState();
+        state.initialTime = state.timeLeft;
 
         timeLeftSpan.textContent = state.timeLeft;
         moneyLeftSpan.textContent = formatMoney(state.moneyLeft);
         timeChip.classList.remove("time-danger");
+        updateTimeBar();
 
         renderItems();
         showScreen("screen-game");
@@ -999,6 +1057,7 @@
           if (state.timeLeft <= 0) {
             state.timeLeft = 0;
             timeLeftSpan.textContent = state.timeLeft;
+            updateTimeBar();
             timeChip.classList.add("time-danger");
             endGame();
             return;
@@ -1009,6 +1068,7 @@
           } else {
             timeChip.classList.remove("time-danger");
           }
+          updateTimeBar();
         }, 1000);
       }
 
@@ -1154,7 +1214,7 @@
         }
         resultBiggest.textContent = biggestName;
 
-        const percentSpent = spent / (START_MONEY + 100_000_000_000); // slight cushion
+        const percentSpent = spent / (START_MONEY + 100_000_000_000);
         let rank = "Middle Class Billionaire";
         let tagline = "You went on a decent shopping spree.";
 
@@ -1256,7 +1316,7 @@
               url,
             });
             shared = true;
-          } catch (e) {
+          } catch {
             shared = false;
           }
         }
